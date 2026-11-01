@@ -140,7 +140,7 @@ function initMatch(){
  // Beide keepers tellen mee voor de speeltijd; alleen de keeper die op doel staat is uitgesloten van de veldroulatie.
  players.push({name:config.keeper1,seconds:0,order:players.length,keeper:true});
  players.push({name:config.keeper2,seconds:0,order:players.length,keeper:true});
- const count=Math.min(config.fieldCount,players.filter(p=>p.name!==keeperName(activeKeeper())).length);
+ const count=Math.min(config.fieldCount,players.filter(p=>p.name!==keeperName(config.firstKeeper)).length);
  const sorted=[...players].sort((a,b)=>a.seconds-b.seconds||a.order-b.order);
  state={half:1,elapsed:0,remaining:currentHalfDuration(),running:false,finished:false,players,onField:[],bench:[],intervalSeconds:config.interval*60,nextSwapAt:config.interval*60,lastWall:Date.now(),swaps:0,manualElapsed:0};
  const eligible=sorted.filter(p=>p.name!==keeperName(activeKeeper()));
