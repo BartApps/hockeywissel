@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0d4738">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Hockeywissel">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Hockeywissel</title>
+<style>
+:root{--green:#0d4738;--green2:#16745b;--lime:#d9f36a;--paper:#f4f7f4;--ink:#13231d;--muted:#62716a;--white:#fff;--red:#b93838;--line:#dce5df}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:14px;padding:13px 16px;font-weight:750;min-height:48px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #8abf34;outline-offset:2px}
+.app-header{background:var(--green);color:white;padding:calc(14px + env(safe-area-inset-top)) 18px 18px;display:flex;justify-content:space-between;align-items:center}
+.brand{font-size:20px;font-weight:850;letter-spacing:-.4px}.brand span{color:var(--lime)}.small-muted{font-size:12px;opacity:.8}
+main{max-width:680px;margin:0 auto;padding:16px;display:grid;gap:14px}
+.card{background:var(--white);border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:0 3px 12px #0d47380a}
+h1,h2,h3,p{margin-top:0}h1{font-size:24px;line-height:1.15;margin-bottom:8px}h2{font-size:18px;margin-bottom:12px}h3{font-size:15px;margin-bottom:8px}
+.intro{color:var(--muted);margin-bottom:0}.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:6px}.field label,.label{font-size:13px;font-weight:750;color:#41554a}
+input,select,textarea{width:100%;border:1px solid #cbd8d0;border-radius:12px;padding:12px;background:#fbfdfb;color:var(--ink);min-height:46px}
+textarea{min-height:110px;resize:vertical}.full{grid-column:1/-1}
+.btn-primary{background:var(--green);color:white}.btn-lime{background:var(--lime);color:var(--green)}.btn-light{background:#eaf1ec;color:var(--green)}.btn-danger{background:#ffeded;color:var(--red)}.btn-ghost{background:transparent;color:var(--green);border:1px solid var(--line)}
+.button-row{display:flex;gap:8px;flex-wrap:wrap}.button-row>*{flex:1}.hint{font-size:12px;color:var(--muted);margin:8px 0 0}
+.hidden{display:none!important}.keeper-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.pill{display:inline-flex;align-items:center;gap:6px;background:#eaf3ec;color:var(--green);border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800}
+.clock-card{background:var(--green);color:white;text-align:center;padding:22px 16px}.phase{font-size:13px;color:#d8e8df;font-weight:800;text-transform:uppercase;letter-spacing:1px}.clock{font-size:clamp(54px,15vw,82px);font-weight:900;letter-spacing:-3px;line-height:1.08;font-variant-numeric:tabular-nums;margin:8px 0}.nextline{color:#d8e8df;font-size:14px}.clock-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.clock-actions button{font-size:17px;min-height:56px}
+.notice{padding:12px 14px;background:#f3f8d9;border-radius:14px;color:#34451c;font-weight:750}.notice.red{background:#ffeded;color:#8b2626}
+.roster-columns{display:grid;grid-template-columns:1fr 1fr;gap:10px}.roster{border:1px solid var(--line);border-radius:14px;padding:10px;min-width:0}.roster h3{display:flex;justify-content:space-between;align-items:center}.player-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid #edf1ee;font-size:14px}.player-row:last-child{border-bottom:0}.player-row input{width:20px;min-height:20px;height:20px;accent-color:var(--green);flex-shrink:0}.player-row .name{flex:1;overflow-wrap:anywhere}.minutes{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.stats-list{display:grid;gap:9px}.stat-row{display:grid;grid-template-columns:minmax(0,1fr) 56px;gap:10px;align-items:center}.stat-name{font-size:14px;font-weight:650}.stat-track{height:5px;background:#e8eee9;border-radius:99px;margin-top:5px;overflow:hidden}.stat-fill{height:100%;background:var(--green2);border-radius:99px}.stat-time{text-align:right;font-weight:800;font-variant-numeric:tabular-nums;font-size:14px}
+.tabs{display:flex;gap:8px}.tabs button{flex:1;padding:10px 8px}.tabs .active{background:var(--green);color:white}.subtle{font-size:13px;color:var(--muted)}.footer{text-align:center;color:var(--muted);font-size:12px;padding:8px 12px 24px}
+@media(max-width:380px){main{padding:10px}.card{padding:13px}.field-grid{gap:9px}.clock{letter-spacing:-2px}.roster-columns{gap:7px}.player-row{font-size:13px}}
+</style>
+</head>
+<body>
+<header class="app-header"><div><div class="brand">🏑 Hockey<span>wissel</span></div><div class="small-muted">Jouw wisselcoach langs de lijn</div></div><button id="resetAllTop" class="btn-light" style="min-height:40px;padding:8px 12px;font-size:13px">Nieuw</button></header>
+<main>
+<section id="setupView">
+  <div class="card"><h1>Wedstrijd instellen</h1><p class="intro">Stel je team in. Je gegevens worden automatisch op dit toestel bewaard.</p></div>
+  <div class="card">
+    <h2>Wedstrijd</h2>
+    <div class="field-grid">
+      <div class="field"><label for="halfMinutes">Minuten per helft</label><input id="halfMinutes" type="number" min="1" max="90" value="25"></div>
+      <div class="field"><label for="halves">Aantal helften</label><select id="halves"><option value="1">1 helft</option><option value="2" selected>2 helften</option><option value="3">3 helften</option><option value="4">4 kwarten/helften</option></select></div>
+      <div class="field"><label for="interval">Wisselinterval (min.)</label><input id="interval" type="number" min="1" max="30" value="4"></div>
+      <div class="field"><label for="fieldCount">Veldspelers tegelijk</label><input id="fieldCount" type="number" min="1" max="11" value="7"></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Keepers</h2>
+    <div class="keeper-grid">
+      <div class="field"><label for="keeper1">Keeper 1</label><input id="keeper1" placeholder="Naam keeper 1" value="Keeper 1"></div>
+      <div class="field"><label for="keeper2">Keeper 2</label><input id="keeper2" placeholder="Naam keeper 2" value="Keeper 2"></div>
+      <div class="field full"><label for="firstKeeper">Wie keept de eerste helft?</label><select id="firstKeeper"><option value="0">Keeper 1</option><option value="1">Keeper 2</option></select></div>
+    </div>
+    <p class="hint">De keeper die niet keept, draait automatisch mee als veldspeler. Bij elke volgende helft wisselen de keepers van rol.</p>
+  </div>
+  <div class="card">
+    <h2>Beschikbare veldspelers</h2>
+    <div class="field"><label for="playersInput">Eén naam per regel</label><textarea id="playersInput" placeholder="Bijvoorbeeld:&#10;Noor&#10;Sophie&#10;Emma&#10;..."></textarea></div>
+    <p class="hint">Vul alle beschikbare veldspelers in, inclusief de keeper die niet start in het doel. De app selecteert automatisch wie start en probeert de speeltijd eerlijk te verdelen.</p>
+  </div>
+  <div class="card">
+    <div class="button-row"><button id="startBtn" class="btn-primary">Start wedstrijd →</button><button id="saveSetupBtn" class="btn-light">Instellingen bewaren</button></div>
+    <p id="setupError" class="hint" style="color:var(--red)"></p>
+  </div>
+</section>
+
+<section id="matchView" class="hidden">
+  <div class="card clock-card">
+    <div id="phaseLabel" class="phase">Eerste helft</div>
+    <div id="clock" class="clock">25:00</div>
+    <div id="nextSwap" class="nextline">Volgende wissel over 04:00</div>
+    <div class="clock-actions"><button id="playPause" class="btn-lime">▶ Start</button><button id="manualSwap" class="btn-light">⇄ Wissel nu</button></div>
+  </div>
+  <div id="notice" class="notice hidden" role="status"></div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px"><h2 style="margin:0">Teamindeling</h2><button id="editLineup" class="btn-ghost" style="min-height:38px;padding:7px 10px;font-size:13px">Aanpassen</button></div>
+    <div class="roster-columns">
+      <div class="roster"><h3>🟢 Op het veld <span id="onCount" class="pill">0</span></h3><div id="onField"></div></div>
+      <div class="roster"><h3>🪑 Op de bank <span id="benchCount" class="pill">0</span></h3><div id="onBench"></div></div>
+    </div>
+    <p class="hint">Tik op ‘Aanpassen’ om spelers handmatig tussen veld en bank te verplaatsen.</p>
+  </div>
+  <div class="card">
+    <h2>Speeltijd</h2><div id="stats" class="stats-list"></div>
+    <p class="hint">Tijden worden bijgewerkt terwijl de klok loopt en blijven bewaard op dit toestel.</p>
+  </div>
+  <div class="card">
+    <h2>Wedstrijdbeheer</h2>
+    <div class="field-grid">
+      <div class="field"><label for="liveInterval">Wisselinterval (min.)</label><input id="liveInterval" type="number" min="1" max="30" value="4"></div>
+      <div class="field"><label for="liveFieldCount">Veldspelers tegelijk</label><input id="liveFieldCount" type="number" min="1" max="11" value="7"></div>
+    </div>
+    <div class="button-row" style="margin-top:12px"><button id="applyLiveSettings" class="btn-light">Instellingen toepassen</button><button id="endMatch" class="btn-danger">Wedstrijd beëindigen</button></div>
+  </div>
+  <div class="button-row"><button id="backToSetup" class="btn-ghost">← Instellingen</button><button id="newMatch" class="btn-primary">Nieuwe wedstrijd</button></div>
+</section>
+</main>
+<div class="footer">Hockeywissel · Werkt lokaal op dit toestel · Geen account nodig</div>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const defaultConfig = {halfMinutes:25,halves:2,interval:4,fieldCount:7,keeper1:"Keeper 1",keeper2:"Keeper 2",firstKeeper:0,players:[]};
+let config = {...defaultConfig}, state = null, timerId = null, lastTick = 0, wakeLock = null, editingLineup = false;
+const STORAGE = "hockeywissel-v1";
+function saveAll(){ try{localStorage.setItem(STORAGE,JSON.stringify({config,state}));}catch(e){} }
+function loadAll(){try{const v=JSON.parse(localStorage.getItem(STORAGE)||"null");if(v){config={...defaultConfig,...v.config};state=v.state||null;}}catch(e){}}
+function formToConfig(){
+ const names=$("playersInput").value.split(/\n/).map(s=>s.trim()).filter(Boolean);
+ const keeper1=$("keeper1").value.trim()||"Keeper 1";
+ const keeper2=$("keeper2").value.trim()||"Keeper 2";
+ // Keepernamen worden apart beheerd; voorkom dat ze dubbel als veldspeler worden aangemaakt.
+ const players=[...new Set(names)].filter(n=>n!==keeper1&&n!==keeper2);
+ return {halfMinutes:clamp(parseInt($("halfMinutes").value)||25,1,90),halves:clamp(parseInt($("halves").value)||2,1,4),interval:clamp(parseInt($("interval").value)||4,1,30),fieldCount:clamp(parseInt($("fieldCount").value)||7,1,11),keeper1,keeper2,firstKeeper:parseInt($("firstKeeper").value)||0,players};
+}
+function configToForm(){ $("halfMinutes").value=config.halfMinutes;$("halves").value=config.halves;$("interval").value=config.interval;$("fieldCount").value=config.fieldCount;$("keeper1").value=config.keeper1;$("keeper2").value=config.keeper2;$("firstKeeper").value=String(config.firstKeeper);$("playersInput").value=config.players.join("\n");}
+function clamp(n,a,b){return Math.max(a,Math.min(b,n));}
+function fmt(sec){sec=Math.max(0,Math.floor(sec));return String(Math.floor(sec/60)).padStart(2,"0")+":"+String(sec%60).padStart(2,"0");}
+function currentHalfDuration(){return config.halfMinutes*60;}
+function halfIndex(){return state.half-1;}
+function activeKeeper(){return (halfIndex()%2===0)?config.firstKeeper:1-config.firstKeeper;}
+function keeperName(idx){return idx===0?config.keeper1:config.keeper2;}
+function eligiblePlayers(){return state.players.filter(p=>p.name!==keeperName(activeKeeper()));}
+function playingNames(){return new Set(state.onField);}
+function allNames(){return state.players.map(p=>p.name);}
+function beep(pattern=[880,660]){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const ctx=new C();pattern.forEach((freq,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=freq;o.type="sine";g.gain.setValueAtTime(.001,ctx.currentTime+i*.19);g.gain.exponentialRampToValueAtTime(.16,ctx.currentTime+i*.19+.02);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.19+.14);o.connect(g);g.connect(ctx.destination);o.start(ctx.currentTime+i*.19);o.stop(ctx.currentTime+i*.19+.16);});setTimeout(()=>ctx.close(),1000);}catch(e){}}
+function showNotice(msg,red=false){$("notice").textContent=msg;$("notice").classList.remove("hidden","red");if(red)$("notice").classList.add("red");}
+function hideNotice(){$("notice").classList.add("hidden");}
+async function requestWakeLock(){try{if("wakeLock" in navigator && document.visibilityState==="visible")wakeLock=await navigator.wakeLock.request("screen");}catch(e){}}
+function releaseWakeLock(){try{wakeLock?.release();}catch(e){}wakeLock=null;}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&state?.running)requestWakeLock();});
+function initMatch(){
+ const names=[...config.players];
+ if(names.length<1){$("setupError").textContent="Voer minimaal één veldspeler in.";return false;}
+ if(names.length+1<config.fieldCount){$("setupError").textContent=`Je hebt ${names.length} veldspelers plus één keeper beschikbaar, maar ${config.fieldCount} veldspelers tegelijk ingesteld. Verlaag het aantal of voeg spelers toe.`;return false;}
+ const players=names.map((name,i)=>({name,seconds:0,order:i}));
+ // Beide keepers tellen mee voor de speeltijd; alleen de keeper die op doel staat is uitgesloten van de veldroulatie.
+ players.push({name:config.keeper1,seconds:0,order:players.length,keeper:true});
+ players.push({name:config.keeper2,seconds:0,order:players.length,keeper:true});
+ const count=Math.min(config.fieldCount,players.filter(p=>p.name!==keeperName(activeKeeper())).length);
+ const sorted=[...players].sort((a,b)=>a.seconds-b.seconds||a.order-b.order);
+ state={half:1,elapsed:0,remaining:currentHalfDuration(),running:false,finished:false,players,onField:[],bench:[],intervalSeconds:config.interval*60,nextSwapAt:config.interval*60,lastWall:Date.now(),swaps:0,manualElapsed:0};
+ const eligible=sorted.filter(p=>p.name!==keeperName(activeKeeper()));
+ state.onField=eligible.slice(0,count).map(p=>p.name);
+ state.bench=players.filter(p=>p.name!==keeperName(activeKeeper())&&!state.onField.includes(p.name)).map(p=>p.name);
+ $("setupError").textContent="";saveAll();$("setupView").classList.add("hidden");$("matchView").classList.remove("hidden");render();showNotice("Wedstrijd staat klaar. Tik op ‘▶ Start’ om de klok te laten lopen.");return true;
+}
+function accountTime(delta){if(!state||delta<=0)return;state.onField.forEach(name=>{const p=state.players.find(x=>x.name===name);if(p)p.seconds+=delta;});state.elapsed+=delta;state.remaining=Math.max(0,currentHalfDuration()-state.elapsed);}
+function syncElapsed(){if(!state?.running)return;const now=Date.now();let delta=(now-(state.lastWall||now))/1000;state.lastWall=now;if(delta>0&&delta<20)accountTime(delta);else if(delta>=20)accountTime(Math.min(delta,20));}
+function tick(){
+ if(!state||!state.running)return;
+ syncElapsed();
+ if(state.remaining<=0){state.running=false;beep([500,500,500]);if(state.half<config.halves){showNotice(`Einde helft ${state.half}. Keepers wisselen van rol. Druk op ‘Volgende helft’ om verder te gaan.`,true);$("playPause").textContent="▶ Volgende helft";$("playPause").dataset.next="1";}else{state.finished=true;showNotice("Einde wedstrijd! Goed gespeeld. 🎉",true);$("playPause").textContent="✓ Afgelopen";$("playPause").disabled=true;}releaseWakeLock();saveAll();render();return;}
+ if(state.elapsed>=state.nextSwapAt){performFairSwap(false);state.nextSwapAt+=state.intervalSeconds;beep();showNotice("Wisselen! De wisselindeling is bijgewerkt.");}
+ renderClock();renderStats();saveAll();
+}
+function startPause(){
+ if(!state||state.finished)return;
+ if($("playPause").dataset.next==="1"){state.half++;state.elapsed=0;state.remaining=currentHalfDuration();state.running=false;state.nextSwapAt=state.intervalSeconds;$("playPause").dataset.next="";hideNotice();performHalfStart();render();return;}
+ state.running=!state.running;state.lastWall=Date.now();
+ if(state.running){$("playPause").textContent="Ⅱ Pauze";requestWakeLock();hideNotice();timerId=setInterval(tick,250);}
+ else{syncElapsed();releaseWakeLock();$("playPause").textContent="▶ Hervatten";saveAll();render();}
+}
+function performHalfStart(){
+ // Keeper roles swap automatically. Ensure the new non-goalkeeper is included in the field rotation.
+ const goalie=keeperName(activeKeeper());
+ if(state.onField.includes(goalie)){state.onField=state.onField.filter(n=>n!==goalie);state.bench.push(goalie);}
+ const offKeeper=keeperName(1-activeKeeper());
+ if(!state.onField.includes(offKeeper)){
+   const eligible=eligiblePlayers().filter(p=>p.name!==offKeeper).sort((a,b)=>a.seconds-b.seconds);
+   if(state.onField.length>=config.fieldCount){const out=[...state.onField].map(n=>state.players.find(p=>p.name===n)).filter(Boolean).sort((a,b)=>b.seconds-a.seconds)[0];if(out){state.onField=state.onField.filter(n=>n!==out.name);state.bench.push(out.name);}}
+   state.bench=state.bench.filter(n=>n!==offKeeper);state.onField.push(offKeeper);
+ }
+ state.bench=[...new Set(state.players.map(p=>p.name).filter(n=>n!==goalie&&!state.onField.includes(n)))];
+ showNotice(`Helft ${state.half} begint. ${keeperName(activeKeeper())} staat op doel; keepers hebben van rol gewisseld.`);
+}
+function performFairSwap(manual=true){
+ if(!state)return;
+ const goalie=keeperName(activeKeeper());
+ let eligible=eligiblePlayers().filter(p=>p.name!==goalie);
+ let on=state.onField.map(n=>state.players.find(p=>p.name===n)).filter(p=>p&&p.name!==goalie);
+ let bench=eligible.filter(p=>!state.onField.includes(p.name));
+ if(!bench.length){if(manual)showNotice("Iedereen die beschikbaar is, staat al op het veld.");return;}
+ // Swap a small group; choose bench players with least playing time and field players with most.
+ const group=Math.max(1,Math.min(Math.ceil(config.fieldCount/3),bench.length,on.length||1));
+ bench.sort((a,b)=>a.seconds-b.seconds||a.order-b.order);
+ on.sort((a,b)=>b.seconds-a.seconds||b.order-a.order);
+ const incoming=bench.slice(0,group),outgoing=on.slice(0,Math.min(group,on.length));
+ if(!outgoing.length){showNotice("Er is niemand beschikbaar om te wisselen.",true);return;}
+ state.onField=state.onField.filter(n=>!outgoing.some(p=>p.name===n));
+ incoming.forEach(p=>state.onField.push(p.name));
+ state.bench=state.players.map(p=>p.name).filter(n=>n!==keeperName(activeKeeper())&&!state.onField.includes(n));
+ state.swaps++;
+ if(manual){beep([700,900]);showNotice(`Handmatige wissel: ${outgoing.map(p=>p.name).join(", ")} eruit · ${incoming.map(p=>p.name).join(", ")} erin.`);}
+}
+function renderClock(){
+ if(!state)return;
+ $("clock").textContent=fmt(state.remaining);
+ $("phaseLabel").textContent=state.finished?"Wedstrijd afgelopen":`Helft ${state.half} van ${config.halves}`;
+ const toSwap=Math.max(0,state.nextSwapAt-state.elapsed);
+ $("nextSwap").textContent=state.running?`Volgende wissel over ${fmt(toSwap)}`:`Wisselinterval: ${config.interval} min.`;
+}
+function renderRoster(){
+ const goalie=keeperName(activeKeeper());
+ $("onField").innerHTML="";$("onBench").innerHTML="";
+ const field=[...state.onField];if(!field.includes(goalie))field.unshift("🧤 "+goalie+" (keeper)");
+ const bench=[...state.players.map(p=>p.name).filter(n=>!state.onField.includes(n)&&n!==goalie)];
+ $("onCount").textContent=state.onField.length;$("benchCount").textContent=bench.length;
+ const makeRow=(name,isField)=>{
+   const p=state.players.find(x=>x.name===name);
+   const row=document.createElement("div");row.className="player-row";
+   if(editingLineup && p && name!==goalie){
+    const cb=document.createElement("input");cb.type="checkbox";cb.checked=isField;cb.setAttribute("aria-label",name+" op het veld");
+    cb.addEventListener("change",()=>{if(cb.checked){if(state.onField.length>=config.fieldCount){cb.checked=false;showNotice(`Maximaal ${config.fieldCount} veldspelers. Haal eerst iemand van het veld.`,true);return;}state.onField.push(name);}else{state.onField=state.onField.filter(n=>n!==name);}state.bench=state.players.map(x=>x.name).filter(n=>!state.onField.includes(n));saveAll();render();});row.appendChild(cb);
+   }
+   const label=document.createElement("span");label.className="name";label.textContent=name;row.appendChild(label);
+   if(p){const mins=document.createElement("span");mins.className="minutes";mins.textContent=fmt(p.seconds);row.appendChild(mins);}
+   return row;
+ };
+ field.forEach(n=>{const actual=n.startsWith("🧤 ")?goalie:n;$("onField").appendChild(makeRow(actual,true));});
+ bench.forEach(n=>{const actual=n.startsWith("🧤 ")?keeperName(1-activeKeeper()):n;$("onBench").appendChild(makeRow(actual,false));});
+}
+function renderStats(){
+ if(!state)return;
+ const sorted=[...state.players].sort((a,b)=>b.seconds-a.seconds);const max=Math.max(1,...sorted.map(p=>p.seconds));
+ $("stats").innerHTML="";
+ sorted.forEach(p=>{const row=document.createElement("div");row.className="stat-row";const left=document.createElement("div");const nm=document.createElement("div");nm.className="stat-name";nm.textContent=p.name;const track=document.createElement("div");track.className="stat-track";const fill=document.createElement("div");fill.className="stat-fill";fill.style.width=(p.seconds/max*100)+"%";track.appendChild(fill);left.append(nm,track);const time=document.createElement("div");time.className="stat-time";time.textContent=fmt(p.seconds);row.append(left,time);$("stats").appendChild(row);});
+}
+function render(){if(!state)return;renderClock();renderRoster();renderStats();$("playPause").textContent=state.running?"Ⅱ Pauze":state.finished?"✓ Afgelopen":$("playPause").dataset.next==="1"?"▶ Volgende helft":"▶ Start";$("playPause").disabled=state.finished;$("liveInterval").value=config.interval;$("liveFieldCount").value=config.fieldCount;}
+function saveSetup(){config=formToConfig();saveAll();$("setupError").textContent="Instellingen bewaard op dit toestel.";}
+$("startBtn").addEventListener("click",()=>{config=formToConfig();if(initMatch()){$("playPause").textContent="▶ Start";}});
+$("saveSetupBtn").addEventListener("click",saveSetup);
+$("playPause").addEventListener("click",startPause);
+$("manualSwap").addEventListener("click",()=>{if(!state||state.finished)return;performFairSwap(true);render();saveAll();});
+$("editLineup").addEventListener("click",()=>{editingLineup=!editingLineup;$("editLineup").textContent=editingLineup?"Klaar":"Aanpassen";renderRoster();});
+$("applyLiveSettings").addEventListener("click",()=>{const i=clamp(parseInt($("liveInterval").value)||4,1,30),c=clamp(parseInt($("liveFieldCount").value)||7,1,11);config.interval=i;config.fieldCount=c;if(state){state.intervalSeconds=i*60;state.nextSwapAt=state.elapsed+state.intervalSeconds;while(state.onField.length>c){const n=state.onField.pop();state.bench.push(n);}const eligible=eligiblePlayers().filter(p=>!state.onField.includes(p.name)).sort((a,b)=>a.seconds-b.seconds);while(state.onField.length<c&&eligible.length){state.onField.push(eligible.shift().name);}state.bench=state.players.map(p=>p.name).filter(n=>!state.onField.includes(n));}saveAll();render();showNotice("Wedstrijdinstellingen toegepast.");});
+$("endMatch").addEventListener("click",()=>{if(!state)return;syncElapsed();state.running=false;state.finished=true;releaseWakeLock();$("playPause").textContent="✓ Afgelopen";$("playPause").disabled=true;showNotice("Wedstrijd handmatig beëindigd. De speeltijden zijn opgeslagen.",true);saveAll();render();});
+$("backToSetup").addEventListener("click",()=>{if(state?.running){state.running=false;releaseWakeLock();}configToForm();$("matchView").classList.add("hidden");$("setupView").classList.remove("hidden");saveAll();});
+function reset(){if(confirm("Een nieuwe wedstrijd starten? De huidige wedstrijdindeling en tijden worden vervangen.")){state=null;releaseWakeLock();if(timerId)clearInterval(timerId);timerId=null;$("matchView").classList.add("hidden");$("setupView").classList.remove("hidden");$("playPause").dataset.next="";$("playPause").disabled=false;configToForm();saveAll();}}
+$("newMatch").addEventListener("click",reset);$("resetAllTop").addEventListener("click",reset);
+loadAll();configToForm();
+if(state && !state.finished){state.running=false;state.lastWall=Date.now();$("setupView").classList.add("hidden");$("matchView").classList.remove("hidden");render();showNotice("Eerdere wedstrijd hersteld. De klok staat gepauzeerd.");}
+if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
+})();
+</script>
+</body>
+</html>
